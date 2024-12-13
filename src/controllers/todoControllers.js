@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     // todo 생성
     create: async (req, res, next) => {
-        const {categ_id, date_from, date_to, todo_title, memo, is_finished } = req.body;
+        const { categ_id, date_from, date_to, todo_title, memo } = req.body;
         const user_id = req.user.id;
 
         const sanitizedTitle = sanitizeHtml(todo_title);
@@ -15,8 +15,8 @@ module.exports = {
 
         try {
             const sql = `
-                INSERT INTO todo (user_id, categ_id, date_from, date_to, todo_title, memo, is_finished)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO todo (user_id, categ_id, date_from, date_to, todo_title, memo)
+                VALUES (?, ?, ?, ?, ?, ?)
             `;
             await db.query(sql, [
                 user_id,
@@ -25,7 +25,6 @@ module.exports = {
                 date_to,
                 sanitizedTitle,
                 sanitizedMemo,
-                is_finished || false
             ]);
 
             // 성공 응답
