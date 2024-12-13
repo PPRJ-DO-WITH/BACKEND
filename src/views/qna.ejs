@@ -1,0 +1,29 @@
+<h2>문의사항 목록</h2>
+<table>
+    <thead>
+        <tr>
+            <th>번호</th><th>제목</th><th>작성자</th><th>답변 여부</th><th>관리</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% let index = qnas.length;
+           qnas.forEach(qna => { %>
+            <tr>
+                <td><%= index-- %></td>
+                <td><%= qna.qna_title %></td>
+                <td><%= qna.user_name %></td>
+                <% if(!qna.qna_comment) {
+                     var isReplied = 'N';
+                   } else {
+                     var isReplied = 'Y';
+                   } %>
+                <td><%= isReplied %></td>   
+                <% if(isReplied === 'N') { %>
+                     <td><a href="/admin/qna/<%= qna.qna_id %>">답변 생성</a></td>
+                <% } else { %>
+                     <td><a href="/admin/qna/<%= qna.qna_id %>">답변 수정</a></td>
+                <% } %>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>

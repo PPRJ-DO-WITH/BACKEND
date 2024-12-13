@@ -1,0 +1,354 @@
+*, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --purple: #a58ae8;
+    --white: #fff;
+    --grey: #f5f5f5;
+    --black1: #222;
+    --black2: #999;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+}
+
+.navigation {
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    background: var(--purple);
+    border-left: 10px solid var(--purple);
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.navigation ul {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.navigation ul li {
+    position: relative;
+    width: 100%;
+    list-style: none;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.navigation ul li:hover {
+    background: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+    margin-bottom: 40px;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.navigation ul li:nth-child(1) .title {
+    font-size: 20px;
+}
+
+.navigation ul li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: var(--white);
+}
+
+.navigation ul li:hover a {
+    color: var(--purple);
+}
+
+.navigation ul li a .icon {
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 75px;
+    text-align: center;
+}
+
+.navigation ul li a .icon ion-icon {
+    font-size: 1.75em;
+}
+
+.navigation ul li a .title {
+    position: relative;
+    display: block;
+    padding: 0 10px;
+    height: 60px;
+    line-height: 60px;
+    white-space: nowrap;
+}
+
+/* curve outside */
+.navigation ul li:hover a::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -50px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 35px 35px 0 10px var(--white);
+    pointer-events: none;   
+}
+
+.navigation ul li:hover a::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -50px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 35px -35px 0 10px var(--white);
+    pointer-events: none;   
+}
+
+/* main */
+.main-content {
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    min-height: 100vh;
+    background: var(--white);
+    transition: 0.5s;
+}
+
+.detail-container {
+    position: relative;
+    width: 100%;
+    display: grid;
+    margin-top: 10px;
+    padding: 30px;
+}
+
+/* QnA Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    text-align: left;
+    background-color: var(--white);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+table thead {
+    background-color: var(--purple);
+    color: var(--white);
+}
+
+table thead th {
+    padding: 15px;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+}
+
+table tbody tr {
+    border-bottom: 1px solid var(--grey);
+    transition: background-color 0.3s;
+}
+
+table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+table tbody td {
+    padding: 15px;
+    color: var(--black1);
+}
+
+table tbody td a {
+    color: var(--purple);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+table tbody td a:hover {
+    color: darken(var(--purple), 10%);
+}
+
+/* Adjusting Detail Container for QnA */
+.detail-container h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: var(--black1);
+    text-transform: capitalize;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    /* background-color: var(--grey); */
+    /* border-radius: 10px; */
+    /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); */
+    max-width: 600px;
+    /* margin: 20px auto; */
+}
+
+form h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: var(--black1);
+}
+
+form div {
+    font-size: 1em;
+    /* color: var(--black2); */
+}
+
+form .qna_content {
+    font-size: 1.1em;
+    border: 1px solid var(--black2);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+form .reply {
+    margin-top: 80px;
+}
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid var(--black2);
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 5px rgba(40, 123, 255, 0.5);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--white);
+    background-color: var(--purple);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    /* max-width: 400px; */
+}
+
+button:hover {
+    /* background-color: darken(var(--grey), 10%); */
+    color: var(--black1);
+    background-color: var(--grey);
+}
+
+button[type="button"] {
+    background-color: var(--grey);
+    color: var(--black1);
+}
+
+button[type="button"]:hover {
+    background-color: lighten(var(--grey), 10%);
+}
+
+/* Styling for Dates and Metadata */
+form div:last-child {
+    font-size: 0.9em;
+    color: var(--black2);
+    margin-top: -10px;
+    text-align: right;
+}
+
+/* Dashboard Style */
+.cardBox {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);;
+    grid-gap: 30px;
+}
+
+.cardBox .card {
+    position: relative;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+}
+
+.cardBox .card .numbers {
+    position: relative;
+    font-weight: 500;
+    font-size: 2.5em;
+    color: var(--purple);
+}
+.cardBox .card .cardName {
+    color: var(--black2);
+    font-size: 1.1em;
+    margin-top: 5px;
+}
+
+.cardBox .card .iconBx {
+    font-size: 3.5em;
+    color: var(--black2);
+}
+
+.cardBox .card:hover {
+    background: var(--purple);
+}
+
+.cardBox .card:hover .numbers,
+.cardBox .card:hover .cardName,
+.cardBox .card:hover .iconBx {
+    color: var(--white);
+}
+
+/* 회원 관리 */
+.user_container {
+    max-width: 400px;
+}
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* max-width: 400px; */
+}

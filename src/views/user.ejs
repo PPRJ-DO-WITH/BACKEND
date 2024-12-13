@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유저 목록</title>
+</head>
+<body>
+    <h2>유저 목록</h2>
+    <!-- 유저 목록 테이블 -->
+    <table>
+        <thead>
+            <tr>
+                <th>아이디</th><th>이름</th><th>이메일</th><th>생년월일</th>
+                <th>클래스</th><th>캘린더</th><th>이모지</th><th colspan="2">관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (users && users.length > 0) { %>
+                <% users.forEach((user, index) => { %>
+                    <tr>
+                        <td><%= user.user_id %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= births[index] %></td>
+                        <td><%= user.class %></td>
+                        <td><%= user.title %></td>
+                        <td><%= user.emoji %></td>
+                        <!-- 수정 버튼 -->
+                        <td><a href="/admin/user/<%= user.user_id %>">수정</a></td>
+                        <!-- 삭제 버튼 -->
+                        <td><a href="/admin/user/delete/<%= user.user_id %>" onclick='if(confirm("정말로 삭제하시겠습니까?")==false){return false}'>삭제</a></td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="8">사용자가 없습니다.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>

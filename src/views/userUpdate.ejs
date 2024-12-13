@@ -1,0 +1,31 @@
+<div class="user_container">
+<form action="/admin/user/update" method="POST">
+    <input type="hidden" name="user_id" value="<%= user.user_id %>">
+    <h2>회원 정보 수정</h2>
+
+    <label for="name">이름</label>
+    <input type="text" id="name" name="name" value="<%= user.name %>" required>
+
+    <label for="email">이메일</label>
+    <input type="email" id="email" name="email" value="<%= user.email %>" required>
+
+    <label for="birth">생년월일</label>
+    <%  const birthday = new Date(user.birth?.getTime() + 9 * 60 * 60 * 1000); // UTC+9 시간 추가 %>
+    <input type="date" id="birth" name="birth" value="<%= user.birth ? birthday.toISOString().split('T')[0] : '' %>">
+
+    <label for="class">클래스</label>
+    <select id="class" name="class" required>
+        <option value="admin" <%= user.class === 'admin' ? 'selected' : '' %>>관리자</option>
+        <option value="user" <%= user.class === 'user' ? 'selected' : '' %>>일반 사용자</option>
+    </select>
+
+    <label for="title">캘린더 제목</label>
+    <input type="text" id="title" name="title" value="<%= user.title %>">
+
+    <label for="emoji">캘린더 이모지</label>
+    <input type="text" id="emoji" name="emoji" value="<%= user.emoji %>">
+
+    <button type="submit">수정</button>
+    <a href="/admin/user"><button type="button">회원 목록</button></a>
+</form>
+</div>

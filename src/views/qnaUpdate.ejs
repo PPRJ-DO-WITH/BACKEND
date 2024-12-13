@@ -1,0 +1,17 @@
+<form action="/admin/qna/reply" method="POST">
+    <input type="hidden" name="qna_id" value="<%=qna[0].qna_id%>">
+    <h2><%= qna[0].qna_title %></h2>
+    <div>문의 사항</div>
+    <div class="qna_content"><%= qna[0].qna_content %></div>
+    <div>문의 작성 시간: <%= createdAt %></div>
+    <div class="reply">답변</div>
+    <% if(!qna[0].qna_comment) { %>
+           <textarea id="reply" name="reply" required></textarea>
+           <button type="submit">답변</button>
+    <% } else { %>
+           <textarea id="reply" name="reply" required><%= qna[0].qna_comment %></textarea>
+           <div>답변 시간: <%= repliedAt %></div>
+           <button type="submit">수정</button>
+    <% } %>
+    <a href="/admin/qna"><button type="button">문의사항 목록</button></a>
+</form>
