@@ -143,7 +143,7 @@ body {
     padding: 30px;
 }
 
-/* QnA Table Styles */
+/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -193,6 +193,10 @@ table tbody td a:hover {
     color: darken(var(--purple), 10%);
 }
 
+.add {
+    max-width: 400px;
+}
+
 /* Adjusting Detail Container for QnA */
 .detail-container h2 {
     font-size: 1.8em;
@@ -207,11 +211,7 @@ form {
     flex-direction: column;
     gap: 15px;
     padding: 20px;
-    /* background-color: var(--grey); */
-    /* border-radius: 10px; */
-    /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); */
     max-width: 600px;
-    /* margin: 20px auto; */
 }
 
 form h2 {
@@ -222,7 +222,6 @@ form h2 {
 
 form div {
     font-size: 1em;
-    /* color: var(--black2); */
 }
 
 form .qna_content {
@@ -262,11 +261,9 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    /* max-width: 400px; */
 }
 
 button:hover {
-    /* background-color: darken(var(--grey), 10%); */
     color: var(--black1);
     background-color: var(--grey);
 }
@@ -350,5 +347,4 @@ input, select {
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    /* max-width: 400px; */
 }

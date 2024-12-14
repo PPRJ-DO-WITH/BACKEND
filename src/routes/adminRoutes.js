@@ -14,9 +14,11 @@ router.get('/', authenticate.verifyTokenCookie, admin.mainView);
 
 /* 회원 관리 */
 router.get('/user', authenticate.verifyTokenCookie, admin.userView);
+router.get('/user/create', authenticate.verifyTokenCookie, admin.userCreate);
+router.post('/user/create', authenticate.verifyTokenCookie, admin.userCreateProcess);
 router.get('/user/:userId', authenticate.verifyTokenCookie, admin.userUpdate);
-router.post('/user/update', authenticate.verifyTokenCookie, admin.updateProcess); 
-router.get('/user/delete/:userId', authenticate.verifyTokenCookie, admin.deleteProcess); 
+router.post('/user/update', authenticate.verifyTokenCookie, admin.userUpdateProcess); 
+router.get('/user/delete/:userId', authenticate.verifyTokenCookie, admin.userDeleteProcess); 
 
 /* 문의사항 관리 */
 router.get('/qna', authenticate.verifyTokenCookie, admin.qnaView);

@@ -54,7 +54,7 @@ module.exports = {
         try {
             util.isAdmin(req, res);
             const [userCounts] = await db.query("SELECT COUNT(user_id) AS count FROM user WHERE class='user'");
-            const [qnaCounts] = await db.query("SELECT COUNT(*)-COUNT(qna_comment) AS non_replied FROM qna");
+            const [qnaCounts] = await db.query("SELECT COUNT(*)-COUNT(qna_comment) AS non_replied FROM QnA");
             const context = {
                 body : 'mainPage.ejs',
                 non_replied : qnaCounts[0].non_replied,
@@ -66,10 +66,11 @@ module.exports = {
         }
     },
 
-    // /* 회원 관리 */
+    /* 회원 관리 */
     userView : async (req, res, next) => {
         try {
-            const [results] = await db.query("SELECT * FROM user WHERE class='user'");
+            util.isAdmin(req, res);
+            const [results] = await db.query("SELECT * FROM user");
             const births = results.map(user => util.birthDate(user.birth));
             const context = {
                 body : 'user.ejs',
@@ -81,10 +82,38 @@ module.exports = {
             next(e);
         }
     },
+    userCreate : async (req, res, next) => {
+        try {
+            util.isAdmin(req, res);
+            const context = {
+                body: 'userUpdate.ejs',
+                crud: 'create',
+            }
+            res.render('layout', context, (err, html) => res.end(html));
+        } catch (e) {
+            next(e);
+        }
+    },
+    userCreateProcess : async (req, res, next) => {
+        const { user_id, password, name, email, birth, userClass } = req.body;
+
+        try {
+            util.isAdmin(req, res);
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const title = `${name}의 캘린더`;  // 기본 title
+            const emoji = '😊';  // 기본 emoji
+            await db.query("INSERT INTO user (user_id, password, name, email, birth, class, title, emoji) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
+                            [user_id, hashedPassword, name, email, birth, userClass, title, emoji]);
+            res.redirect('/admin/user');
+        } catch (e) {
+            next(e);
+        }
+    },
     userUpdate : async (req, res, next) => {
         const { userId } = req.params;
 
         try {
+            util.isAdmin(req, res);
             const [result] = await db.query('SELECT * FROM user WHERE user_id=?', [userId]);
             if (result.length === 0) {
                 return res.status(404).send('회원 정보를 찾을 수 없습니다.');
@@ -92,16 +121,18 @@ module.exports = {
             const context = {
                 body: 'userUpdate.ejs',
                 user: result[0],
+                crud: 'update',
             }
             res.render('layout', context, (err, html) => res.end(html));
         } catch (e) {
             next(e);
         }
     },
-    updateProcess : async (req, res, next) => {
+    userUpdateProcess : async (req, res, next) => {
         const { user_id, name, email, birth, class: userClass, title, emoji } = req.body;
 
         try {
+            util.isAdmin(req, res);
             const [result] = await db.query("UPDATE user SET name=?, email=?, birth=?, class=?, title=?, emoji=? WHERE user_id=?",
                                             [name, email, birth, userClass, title, emoji, user_id]);
             if (result.affectedRows === 0) {
@@ -112,10 +143,11 @@ module.exports = {
             next(e);
         }
     },
-    deleteProcess : async (req, res, next) => {
+    userDeleteProcess : async (req, res, next) => {
         const { userId } = req.params;
 
         try {
+            util.isAdmin(req, res);
             const [result] = await db.query('DELETE FROM user WHERE user_id=?', [userId]);
             if (result.affectedRows === 0) {
                 return res.status(404).send('회원을 찾을 수 없습니다.');
@@ -130,7 +162,7 @@ module.exports = {
     qnaView : async (req, res, next) => {
         try {
             util.isAdmin(req, res);
-            const [qnas] = await db.query("SELECT q.*, u.name AS user_name FROM qna q INNER JOIN user u ON (q.user_id = u.user_id) ORDER BY created_at DESC");
+            const [qnas] = await db.query("SELECT q.*, u.name AS user_name FROM QnA q INNER JOIN user u ON (q.user_id = u.user_id) ORDER BY created_at DESC");
             const context = {
                 body : 'qna.ejs',
                 qnas : qnas,
@@ -145,7 +177,7 @@ module.exports = {
 
         try {
             util.isAdmin(req, res);
-            const [qna] = await db.query("SELECT * FROM qna WHERE qna_id=?", [qnaId]);
+            const [qna] = await db.query("SELECT * FROM QnA WHERE qna_id=?", [qnaId]);
             const createdAt = util.dateOfEightDigit(qna[0].created_at);
             var repliedAt = '';
             if(qna[0].replied_at) {
@@ -169,7 +201,7 @@ module.exports = {
             const sntzedQnaId = sanitizeHtml(qna_id);
             const sntzedReply = sanitizeHtml(reply);
 
-            db.query("UPDATE qna SET qna_comment=?, replied_at=NOW() WHERE qna_id=?", [sntzedReply, sntzedQnaId]);
+            db.query("UPDATE QnA SET qna_comment=?, replied_at=NOW() WHERE qna_id=?", [sntzedReply, sntzedQnaId]);
             res.redirect('/admin/qna');
         } catch (e) {
             next(e);
