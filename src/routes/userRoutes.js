@@ -14,10 +14,10 @@ router.get('/logout', authenticate.verifyToken, user.logout);
 router.post('/register', user.register);
 
 // 사용자 ID 검색
-router.post('/search/id', authenticate.verifyToken, user.searchId);
+router.post('/search/id', user.searchId);
 
 // 사용자 비밀번호 찾기
-router.post('/search/password', authenticate.verifyToken, user.searchPassword);
+router.post('/search/password', user.searchPassword);
 
 // 프로필 수정
 router.put('/profile/update', authenticate.verifyToken, user.profileUpdate);

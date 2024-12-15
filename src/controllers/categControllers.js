@@ -1,6 +1,4 @@
 const db = require('../config/db');
-const sanitizeHtml = require('sanitize-html');
-const jwt = require('jsonwebtoken');
 
 module.exports = {
     // 카테고리 목록 확인
@@ -19,7 +17,7 @@ module.exports = {
             // 결과 반환
             res.status(200).json({
                 message: '카테고리가 성공적으로 조회되었습니다',
-                categories: results
+                category: results
             });
         } catch (e) {
             next(e);
@@ -45,7 +43,9 @@ module.exports = {
     
             res.status(201).json({
                 message: '카테고리가 성공적으로 생성되었습니다',
-                categoryId: results.insertId,
+                category: {
+                    id: results.insertId,
+                },
             });
         } catch (e) {
             next(e);
@@ -90,7 +90,14 @@ module.exports = {
                 return res.status(404).json({ message: '카테고리를 찾을 수 없거나 업데이트되지 않았습니다' });
             }
 
-            res.status(200).json({ message: '카테고리가 성공적으로 수정되었습니다' });
+            res.status(200).json({ 
+                message: '카테고리가 성공적으로 수정되었습니다',
+                category: {
+                    id: categId,
+                    class: categ_class,
+                    color: categ_color,
+                }
+            });
         } catch (e) {
             next(e); 
         }

@@ -16,7 +16,7 @@ module.exports = {
 
             // 사용자 존재 여부 확인
             if (results.length === 0) {
-                return res.status(404).json({ message: '사용자를 찾을 수 업습니다' });
+                return res.status(404).json({ message: '사용자를 찾을 수 없습니다' });
             }
 
             const user = results[0];
@@ -34,7 +34,13 @@ module.exports = {
                 { expiresIn: '1h' }
             );
 
-            return res.status(200).json({ message: '로그인에 성공했습니다', token });
+            return res.status(200).json({ 
+                message: '로그인에 성공했습니다', 
+                token,
+                user: { 
+                    id: user.user_id, 
+                }
+            });
 
         } catch (e) {
             next(e);
@@ -68,7 +74,8 @@ module.exports = {
     // 회원가입 처리
     register: async (req, res, next) => {
         const { user_id, password, name, email, birth } = req.body;
-        const emoji = '\u{1F60A}';  // 기본 emoji
+        // const emoji = '\u{1F60A}';  // 기본 emoji
+        const emoji = '😊';  // 기본 emoji
 
         try {
             const sanitizedUserId = sanitizeHtml(user_id);
@@ -81,23 +88,17 @@ module.exports = {
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
 
-            // 데이터베이스에 사용자 추가
-            const sql = `
-                INSERT INTO user (user_id, password, name, email, birth, class, title, emoji)
-                VALUES (?, ?, ?, ?, ?, 'user', ?, ?)
-            `;
-
-            await db.query(sql, [
-                sanitizedUserId,
-                hashedPassword,
-                sanitizedName,
-                sanitizedEmail,
-                sanitizedBirth,
-                title,
-                emoji
-            ]);
-
-            res.status(201).json({ message: '회원가입에 성공했습니다' });
+            await db.query("INSERT INTO user (user_id, password, name, email, birth, class, title, emoji) VALUES (?, ?, ?, ?, ?, 'user', ?, ?)", 
+                            [sanitizedUserId, hashedPassword, sanitizedName, sanitizedEmail, sanitizedBirth, title, emoji]);
+            res.status(201).json({ 
+                message: '회원가입에 성공했습니다',
+                user: { 
+                    id: user_id, 
+                    name: name,
+                    email: email,
+                    birth: birth
+                }
+            });
         } catch (e) {
             next(e);
         }
@@ -220,7 +221,13 @@ module.exports = {
             // 데이터베이스 업데이트 실행
             await db.query(sql, valuesToUpdate);
 
-            res.status(200).json({ message: '프로필이 성공적으로 수정되었습니다' });
+            res.status(200).json({ 
+                message: '프로필이 성공적으로 수정되었습니다',
+                user: {
+                    name: name,
+                    email: email,
+                }
+            });
         } catch (e) {
             next(e);
         }
@@ -266,7 +273,12 @@ module.exports = {
                 return res.status(404).json({ message: '사용자를 찾을 수 없거나 캘린더 제목이 수정되지 않았습니다' });
             }
 
-            res.status(200).json({ message: '캘린더 제목이 성공적으로 수정되었습니다' });
+            res.status(200).json({ 
+                message: '캘린더 제목이 성공적으로 수정되었습니다',
+                user: {
+                    title: title,
+                }
+            });
 
         } catch (e) {
             next(e); 
@@ -294,11 +306,36 @@ module.exports = {
                 return res.status(404).json({ message: '사용자를 찾을 수 없거나 캘린더 이모지가 수정되지 않았습니다' });
             }
 
-            res.status(200).json({ message: '이모지가 성공적으로 수정되었습니다' });
+            res.status(200).json({ 
+                message: '이모지가 성공적으로 수정되었습니다',
+                user: {
+                    emoji: emoji,
+                }
+            });
 
         } catch (e) {
             next(e); 
         }
-    }
+    },
 
+    getProfile : async (req, res, next) => {
+        const user_id = req.user.id; // JWT에서 추출한 사용자 ID
+
+        try {
+            const [result] = await db.query("SELECT * FROM user WHERE user_id=?", user_id);
+
+            res.status(200).json({ 
+                message: '프로필을 성공적으로 불러왔습니다',
+                user: {
+                    name: result[0].name,
+                    email: result[0].email,
+                    title: result[0].title,
+                    // birth: result[0].birth,
+                    emoji: result[0].emoji,
+                }
+            });
+        } catch (e) {
+            next(e);
+        }
+    },
 };

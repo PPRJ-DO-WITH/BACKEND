@@ -30,6 +30,13 @@ module.exports = {
             // 성공 응답
             res.status(201).json({
                 message: 'todo가 성공적으로 생성되었습니다',
+                user: user_id,
+                todo: {
+                    title: todo_title,
+                    category: categ_id,
+                    from: date_from,
+                    to: date_to,
+                }
             });
 
         } catch (e) {
@@ -81,6 +88,14 @@ module.exports = {
 
             res.status(200).json({
                 message: 'todo가 성공적으로 수정되었습니다',
+                user: user_id,
+                todo: {
+                    id: todoId,
+                    title: todo_title,
+                    category: categ_id,
+                    from: date_from,
+                    to: date_to,
+                }
             });
         } catch (e) {
             next(e);
@@ -186,7 +201,7 @@ module.exports = {
             }, {});
     
             res.status(200).json({
-                results: groupedResults,
+                todo: groupedResults,
             });
         } catch (e) {
             next(e);
@@ -225,7 +240,7 @@ module.exports = {
             });
     
             res.status(200).json({
-                results,
+                todo: results,
             });
         } catch (e) {
             next(e);

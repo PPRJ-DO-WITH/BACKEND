@@ -6,7 +6,7 @@ module.exports = {
     getAllChat : async (req, res, next) => {
         try {
             const [chats] = await db.query('SELECT * FROM chat');
-            res.status(200).json({ data: chats});
+            res.status(200).json({ chat: chats });
         } catch (e) {
             next(e);
         }
@@ -17,9 +17,9 @@ module.exports = {
         try {
             const [chat] = await db.query('SELECT * FROM chat WHERE chat_id=?', [chatId]);
             if(chat.length === 0) {
-                return res.status(404).json({ message: '해당 채팅이 존재하지 않습니다.'});
+                return res.status(404).json({ message: '해당 채팅이 존재하지 않습니다.' });
             }
-            res.status(200).json(chat);
+            res.status(200).json({ chat: chat });
         } catch (e) { 
             next(e);
         }
@@ -29,7 +29,10 @@ module.exports = {
         
         try {
             const [chat] = await db.query('INSERT INTO chat (user_id) VALUES (?)', [user_id]);
-            res.status(200).json({ message: "새로운 채팅을 시작합니다." });
+            res.status(200).json({ 
+                message: "새로운 채팅을 시작합니다.",
+                chat: chat,
+            });
         } catch (e) {
             next(e);
         }
@@ -49,7 +52,13 @@ module.exports = {
             if(chat.length === 0) {
                 return res.status(404).json({ message: '해당 채팅이 존재하지 않습니다.'});
             }
-            res.status(200).json({ message: "성공적으로 수정되었습니다." });
+            res.status(200).json({ 
+                message: "성공적으로 수정되었습니다.",
+                chat: {
+                    id: chatId,
+                    title: title,
+                }
+            });
         } catch (e) {
             next(e);
         }
@@ -105,7 +114,6 @@ module.exports = {
             console.log("\nGPT: ", chatMessage);
 
             const [gptContent] = await db.query('INSERT INTO message (chat_id, content, sender) VALUES (?, ?, ?)', [chatId, chatMessage, 'chatbot']);
-            res.status(200).json({ message: "해당 요청에 대해 답변 드렸습니다." });
 
             if(!gptContent) {
                 return res.status(500).json({ message: "일정 삽입이 불가합니다." });
@@ -113,6 +121,13 @@ module.exports = {
 
             const msgId = gptContent.insertId;
             await openai.parseTodoData(msgId);
+            res.status(200).json({ 
+                message: "해당 요청에 대해 답변 드렸습니다.",
+                chat_message: {
+                    user_message: userContent,
+                    gpt_message: gptContent,
+                },
+            });
         } catch (e) {
             next(e);
         }
@@ -145,11 +160,14 @@ module.exports = {
             }
 
             // 3. suggested_todo 테이블 - is_accepted 값 업데이트
-            await connection.query("UPDATE suggested_todo SET is_accepted=1 WHERE message_id=?", [messageId]);
+            const [results] = await connection.query("UPDATE suggested_todo SET is_accepted=1 WHERE message_id=?", [messageId]);
 
             // 트랜잭션 커밋
             await connection.commit();
-            res.status(200).json({ message: "성공적으로 수행되었습니다." });
+            res.status(200).json({ 
+                message: "성공적으로 수행되었습니다.",
+                accepted_todo: results,
+            });
         } catch (e) {
             await connection.rollback(); // 에러 발생 시 트랜잭션 롤백
             next(e);
