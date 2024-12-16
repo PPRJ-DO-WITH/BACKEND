@@ -31,4 +31,7 @@ router.put('/calendar/title', authenticate.verifyToken, user.calendarTitle);
 // 캘린더 이모지 수정
 router.put('/calendar/emoji', authenticate.verifyToken, user.calendarEmoji);
 
+// 사용자 정보 가져오기
+router.get('/profile', authenticate.verifyToken, user.getProfile);
+
 module.exports = router;
