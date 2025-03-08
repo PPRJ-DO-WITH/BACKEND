@@ -53,6 +53,7 @@ module.exports = {
     mainView : async (req, res, next) => {
         try {
             util.isAdmin(req, res);
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             const [userCounts] = await db.query("SELECT COUNT(user_id) AS count FROM user WHERE class='user'");
             const [qnaCounts] = await db.query("SELECT COUNT(*)-COUNT(qna_comment) AS non_replied FROM QnA");
             const context = {
@@ -70,6 +71,7 @@ module.exports = {
     userView : async (req, res, next) => {
         try {
             util.isAdmin(req, res);
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             const [results] = await db.query("SELECT * FROM user");
             const births = results.map(user => util.birthDate(user.birth));
             const context = {
@@ -86,7 +88,7 @@ module.exports = {
         try {
             util.isAdmin(req, res);
             const context = {
-                body: 'userUpdate.ejs',
+                body: 'userCU.ejs',
                 crud: 'create',
             }
             res.render('layout', context, (err, html) => res.end(html));
@@ -102,6 +104,7 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, 10);
             const title = `${name}의 캘린더`;  // 기본 title
             const emoji = '😊';  // 기본 emoji
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             await db.query("INSERT INTO user (user_id, password, name, email, birth, class, title, emoji) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
                             [user_id, hashedPassword, name, email, birth, userClass, title, emoji]);
             res.redirect('/admin/user');
@@ -114,12 +117,13 @@ module.exports = {
 
         try {
             util.isAdmin(req, res);
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             const [result] = await db.query('SELECT * FROM user WHERE user_id=?', [userId]);
             if (result.length === 0) {
                 return res.status(404).send('회원 정보를 찾을 수 없습니다.');
             }
             const context = {
-                body: 'userUpdate.ejs',
+                body: 'userCU.ejs',
                 user: result[0],
                 crud: 'update',
             }

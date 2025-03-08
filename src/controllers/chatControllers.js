@@ -121,13 +121,16 @@ module.exports = {
 
             const msgId = gptContent.insertId;
             await openai.parseTodoData(msgId);
-            res.status(200).json({ 
+            res.status(200).json({
                 message: "해당 요청에 대해 답변 드렸습니다.",
                 chat_message: {
-                    user_message: userContent,
-                    gpt_message: gptContent,
+                  user_message: userContent,
+                  gpt_message: {
+                    id: gptContent.insertId,
+                    text: chatMessage, // GPT 응답 텍스트를 반환
+                  },
                 },
-            });
+              });
         } catch (e) {
             next(e);
         }

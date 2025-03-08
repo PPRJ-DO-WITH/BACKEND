@@ -194,6 +194,8 @@ module.exports = {
                     acc[date].push({
                         title: item.todo_title,
                         categ_id: item.categ_id,
+                        date_from: item.date_from,
+                        date_to: item.date_to,
                     });
                 });
     

@@ -87,7 +87,7 @@ module.exports = {
 
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
-
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             await db.query("INSERT INTO user (user_id, password, name, email, birth, class, title, emoji) VALUES (?, ?, ?, ?, ?, 'user', ?, ?)", 
                             [sanitizedUserId, hashedPassword, sanitizedName, sanitizedEmail, sanitizedBirth, title, emoji]);
             res.status(201).json({ 
@@ -184,6 +184,7 @@ module.exports = {
         const sanitizedEmail = sanitizeHtml(email);
 
         try {
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             // 비밀번호 암호화
             let hashedPassword = null;
             if (sanitizedPassword) {
@@ -291,6 +292,7 @@ module.exports = {
         const userId = req.user.id;
 
         try {
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             // emoji 업데이트 쿼리
             const sql = `
                 UPDATE user
@@ -322,11 +324,13 @@ module.exports = {
         const user_id = req.user.id; // JWT에서 추출한 사용자 ID
 
         try {
+            await db.query("SET NAMES utf8mb4").catch(console.error);
             const [result] = await db.query("SELECT * FROM user WHERE user_id=?", user_id);
 
             res.status(200).json({ 
                 message: '프로필을 성공적으로 불러왔습니다',
                 user: {
+                    id: user_id,
                     name: result[0].name,
                     email: result[0].email,
                     title: result[0].title,

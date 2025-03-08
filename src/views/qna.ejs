@@ -6,6 +6,7 @@
         </tr>
     </thead>
     <tbody>
+        <% if (qnas && qnas.length > 0) { %>
         <% let index = qnas.length;
            qnas.forEach(qna => { %>
             <tr>
@@ -25,5 +26,10 @@
                 <% } %>
             </tr>
         <% }); %>
+        <% } else { %>
+            <tr>
+                <td colspan="5">문의사항이 없습니다.</td>
+            </tr>
+        <% } %>
     </tbody>
 </table>
